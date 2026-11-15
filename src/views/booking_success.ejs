@@ -1,0 +1,33 @@
+<%- include('partials/header') %>
+
+<div class="row justify-content-center my-4">
+    <div class="col-md-7 col-lg-6 text-center">
+        <div class="card shadow border-0 p-4">
+            <div class="card-body">
+                <i class="fa-solid fa-circle-check text-success fa-3x mb-3"></i>
+                <h1 class="h3 fw-bold text-success">Đặt tour thành công!</h1>
+                <p class="text-muted">Mã đơn hàng: <strong>#<%= booking.id %></strong></p>
+                <p class="text-muted">Ngày khởi hành: <strong><%= new Date(`${booking.booking_date}T00:00:00`).toLocaleDateString('vi-VN') %></strong></p>
+                <p>Tổng tiền: <strong class="text-danger fs-4"><%= Math.round(Number(booking.total_price)).toLocaleString('vi-VN') %> VNĐ</strong></p>
+                <hr class="my-4">
+                <h2 class="h5 fw-bold">Quét mã VietQR để thanh toán</h2>
+                <p class="small text-muted">Dùng ứng dụng ngân hàng để quét mã và giữ nguyên nội dung chuyển khoản.</p>
+                <div class="my-3">
+                    <img src="<%= qrUrl %>" class="img-fluid rounded shadow border p-2 bg-white" style="max-width:280px" alt="Mã QR chuyển khoản VietQR">
+                </div>
+                <div class="alert alert-warning text-start small mb-4">
+                    <p class="mb-1"><strong>Ngân hàng:</strong> <%= bankInfo.bankId %></p>
+                    <p class="mb-1"><strong>Số tài khoản:</strong> <%= bankInfo.accountNo %></p>
+                    <p class="mb-1"><strong>Chủ tài khoản:</strong> <%= bankInfo.accountName %></p>
+                    <p class="mb-0"><strong>Nội dung chuyển khoản:</strong> <span class="text-danger fw-bold">DATTOUR <%= booking.id %></span></p>
+                </div>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="/my-bookings" class="btn btn-primary fw-bold">Đơn đặt của tôi</a>
+                    <a href="/" class="btn btn-outline-secondary">Về trang chủ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

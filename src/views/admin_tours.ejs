@@ -1,0 +1,46 @@
+<%- include('partials/header') %>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <p class="section-kicker mb-1">Khu vực quản trị</p>
+        <h1 class="h2 fw-bold mb-0">Quản lý tour</h1>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/admin/dashboard" class="btn btn-outline-secondary">Dashboard</a>
+        <a href="/admin/tours/new" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>Thêm tour</a>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr><th>Ảnh</th><th>Tour</th><th>Điểm đến</th><th>Thời lượng</th><th>Giá</th><th>Nổi bật</th><th class="text-end">Thao tác</th></tr>
+            </thead>
+            <tbody>
+                <% if (tours.length) { %>
+                    <% tours.forEach(tour => { %>
+                        <tr>
+                            <td><img src="<%= tour.image_url %>" alt="<%= tour.title %>" width="76" height="54" class="rounded object-fit-cover"></td>
+                            <td class="fw-semibold"><%= tour.title %></td>
+                            <td><%= tour.destination %></td>
+                            <td><%= tour.duration %></td>
+                            <td class="text-nowrap"><%= Number(tour.price).toLocaleString('vi-VN') %> VNĐ</td>
+                            <td><%= tour.is_featured ? 'Có' : 'Không' %></td>
+                            <td class="text-end text-nowrap">
+                                <a href="/admin/tours/<%= tour.id %>/edit" class="btn btn-sm btn-outline-primary">Sửa</a>
+                                <form action="/admin/tours/<%= tour.id %>/delete" method="POST" class="d-inline" onsubmit="return confirm('Xóa tour này? Các đơn đặt liên quan cũng sẽ bị xóa.');">
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Xóa</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="7" class="text-center text-muted py-5">Chưa có tour. Hãy thêm tour đầu tiên.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

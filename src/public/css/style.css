@@ -1,0 +1,156 @@
+:root {
+    --primary-color: #176b67;
+    --primary-hover: #115652;
+    --accent-color: #e69a36;
+    --accent-hover: #cf8122;
+    --bg-light: #f6f8f7;
+    --surface-color: #ffffff;
+    --text-dark: #243331;
+    --text-muted: #6d7b78;
+    --border-color: #e4eae8;
+    --bs-primary: var(--primary-color);
+    --bs-primary-rgb: 23, 107, 103;
+    --bs-danger: #c66e48;
+    --bs-danger-rgb: 198, 110, 72;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    min-height: 100vh;
+    background: var(--bg-light);
+    color: var(--text-dark);
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    line-height: 1.65;
+}
+
+a { color: var(--primary-color); }
+a:hover { color: var(--primary-hover); }
+
+.navbar-travel {
+    background: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 12px rgb(36 51 49 / 5%);
+}
+
+.navbar-travel .navbar-brand { color: var(--primary-color); letter-spacing: -.03em; }
+.navbar-travel .nav-link { color: var(--text-dark); font-weight: 500; }
+.navbar-travel .nav-link:hover,
+.navbar-travel .nav-link.active { color: var(--primary-color); }
+.navbar-travel .navbar-toggler { border-color: var(--border-color); }
+.navbar-travel .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23176b67' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--primary-color);
+    --bs-btn-border-color: var(--primary-color);
+    --bs-btn-hover-bg: var(--primary-hover);
+    --bs-btn-hover-border-color: var(--primary-hover);
+    --bs-btn-active-bg: var(--primary-hover);
+    --bs-btn-active-border-color: var(--primary-hover);
+}
+
+.btn-warning,
+.btn-accent {
+    --bs-btn-bg: var(--accent-color);
+    --bs-btn-border-color: var(--accent-color);
+    --bs-btn-color: #2d281f;
+    --bs-btn-hover-bg: var(--accent-hover);
+    --bs-btn-hover-border-color: var(--accent-hover);
+    --bs-btn-hover-color: #fff;
+}
+
+.text-primary { color: var(--primary-color) !important; }
+.text-danger { color: var(--accent-hover) !important; }
+.text-muted { color: var(--text-muted) !important; }
+.bg-primary { background-color: var(--primary-color) !important; }
+
+.card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 3px 14px rgb(36 51 49 / 5%);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgb(36 51 49 / 9%);
+}
+
+.card-img-top { object-fit: cover; }
+.form-control, .form-select { border-color: #d9e1de; border-radius: 8px; }
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 .2rem rgb(23 107 103 / 13%);
+}
+
+.section-kicker {
+    color: var(--primary-color);
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.tour-gallery { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+.tour-gallery-main, .tour-gallery-thumb { display: block; position: relative; overflow: hidden; background: #e9efec; }
+.tour-gallery-main { min-height: 350px; border-radius: 12px 0 0 12px; }
+.tour-gallery-main img, .tour-gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.tour-gallery-thumbs { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; min-height: 350px; }
+.tour-gallery-thumb { min-height: 0; }
+.tour-gallery-thumb:nth-child(2) { border-radius: 0 12px 0 0; }
+.tour-gallery-thumb:last-child { border-radius: 0 0 12px 0; }
+.tour-gallery-overlay { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; background: rgb(20 35 33 / 58%); font-size: 1.5rem; font-weight: 700; }
+
+.tour-sidebar { position: sticky; top: 90px; }
+.tour-fact { display: flex; gap: .75rem; align-items: flex-start; color: var(--text-muted); }
+.tour-fact i { width: 1.15rem; margin-top: .3rem; color: var(--primary-color); }
+.tour-price { color: var(--accent-hover); font-size: 1.7rem; font-weight: 700; }
+.tour-price-note { color: var(--text-muted); font-size: .82rem; }
+.tour-highlight-list { list-style: none; padding: 0; }
+.tour-highlight-list li { display: flex; gap: .7rem; padding: .45rem 0; }
+.tour-highlight-list i { margin-top: .35rem; color: var(--primary-color); }
+.departure-table th { color: var(--text-muted); font-size: .85rem; font-weight: 600; }
+.departure-table td, .departure-table th { padding: .85rem .65rem; }
+
+.accordion-item { border-color: var(--border-color); }
+.accordion-button:not(.collapsed) { color: var(--primary-color); background: #edf5f3; box-shadow: none; }
+.accordion-button:focus { box-shadow: 0 0 0 .2rem rgb(23 107 103 / 13%); }
+
+.tourSwiper { padding: 2px 2px 42px; }
+.tourSwiper .swiper-slide { height: auto; }
+.featured-tour-card { min-height: 100%; }
+.featured-tour-card .card-img-top { height: 220px; }
+.featured-tour-card:hover { transform: translateY(-4px); }
+.featured-controls button {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    color: var(--primary-color);
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    transition: color .2s ease, background .2s ease, border-color .2s ease;
+}
+.featured-controls button:hover { color: #fff; background: var(--primary-color); border-color: var(--primary-color); }
+.featured-controls button:focus-visible { outline: 3px solid rgb(23 107 103 / 25%); outline-offset: 2px; }
+.tour-results-loading { opacity: .5; pointer-events: none; transition: opacity .18s ease; }
+.tourSwiper .swiper-pagination-bullet { background: var(--primary-color); opacity: .3; }
+.tourSwiper .swiper-pagination-bullet-active { opacity: 1; }
+.tourSwiper .swiper-button-disabled { opacity: .4; }
+
+@media (max-width: 767.98px) {
+    .tour-gallery { grid-template-columns: 1fr; }
+    .tour-gallery-main { min-height: 260px; border-radius: 12px 12px 0 0; }
+    .tour-gallery-thumbs { min-height: 210px; }
+    .tour-gallery-thumb:nth-child(2) { border-radius: 0; }
+    .tour-gallery-thumb:last-child { border-radius: 0 0 12px 0; }
+    .tour-sidebar { position: static; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

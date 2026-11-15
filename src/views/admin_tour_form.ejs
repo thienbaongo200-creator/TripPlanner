@@ -1,0 +1,85 @@
+<%- include('partials/header') %>
+
+<div class="row justify-content-center">
+    <div class="col-xl-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <p class="section-kicker mb-1">Quản lý tour</p>
+                <h1 class="h2 fw-bold mb-0"><%= isEditing ? 'Cập nhật tour' : 'Thêm tour mới' %></h1>
+            </div>
+            <a href="/admin/tours" class="btn btn-outline-secondary">Quay lại</a>
+        </div>
+
+        <% if (error) { %><div class="alert alert-danger"><%= error %></div><% } %>
+
+        <form action="<%= isEditing ? `/admin/tours/${tour.id}/update` : '/admin/tours' %>" method="POST" enctype="multipart/form-data" class="card border-0 shadow-sm p-4">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label fw-semibold" for="title">Tên tour</label>
+                    <input class="form-control" id="title" name="title" maxlength="255" value="<%= tour.title || '' %>" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold" for="destination">Điểm đến</label>
+                    <input class="form-control" id="destination" name="destination" maxlength="100" value="<%= tour.destination || '' %>" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold" for="price">Giá tour (VNĐ/khách)</label>
+                    <input class="form-control" id="price" name="price" type="number" min="1" step="1000" value="<%= tour.price || '' %>" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold" for="duration">Thời lượng</label>
+                    <input class="form-control" id="duration" name="duration" maxlength="50" placeholder="3 ngày 2 đêm" value="<%= tour.duration || '' %>" required>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" id="is_featured" name="is_featured" type="checkbox" <%= tour.is_featured ? 'checked' : '' %>>
+                        <label class="form-check-label" for="is_featured">Đánh dấu tour nổi bật</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-semibold" for="description">Mô tả</label>
+                    <textarea class="form-control" id="description" name="description" rows="4"><%= tour.description || '' %></textarea>
+                </div>
+
+                <% if (isEditing) { %>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold d-block">Ảnh bìa hiện tại</label>
+                        <img src="<%= tour.image_url %>" alt="Ảnh bìa <%= tour.title %>" class="rounded border object-fit-cover" style="width:220px;height:145px">
+                    </div>
+                <% } %>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold" for="mainImage"><%= isEditing ? 'Thay ảnh bìa (không bắt buộc)' : 'Ảnh bìa (bắt buộc)' %></label>
+                    <input class="form-control" id="mainImage" name="mainImage" type="file" accept=".jpg,.jpeg,image/jpeg" <%= isEditing ? '' : 'required' %>>
+                    <div class="form-text">JPEG, tối đa 5 MB. Ảnh sẽ lưu thành <code>main.jpg</code>.</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold" for="subImages">Ảnh phụ (tối đa 4 ảnh)</label>
+                    <input class="form-control" id="subImages" name="subImages" type="file" accept=".jpg,.jpeg,image/jpeg" multiple>
+                    <div class="form-text">JPEG, mỗi ảnh tối đa 5 MB. Chọn ảnh mới sẽ thay bộ ảnh phụ hiện tại.</div>
+                </div>
+
+                <% if (isEditing && Array.isArray(tour.gallery_images) && tour.gallery_images.length) { %>
+                    <div class="col-12">
+                        <p class="form-label fw-semibold">Ảnh phụ hiện tại</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <% tour.gallery_images.forEach((image, index) => { %>
+                                <img src="<%= image %>" alt="Ảnh phụ <%= index + 1 %> của <%= tour.title %>" class="rounded border object-fit-cover" width="112" height="80">
+                            <% }) %>
+                        </div>
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" name="remove_gallery" id="remove_gallery">
+                            <label class="form-check-label" for="remove_gallery">Xóa toàn bộ ảnh phụ</label>
+                        </div>
+                    </div>
+                <% } %>
+
+                <div class="col-12 d-flex gap-2 pt-2">
+                    <button class="btn btn-primary px-4" type="submit"><%= isEditing ? 'Lưu thay đổi' : 'Tạo tour' %></button>
+                    <a href="/admin/tours" class="btn btn-outline-secondary">Hủy</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

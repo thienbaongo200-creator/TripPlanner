@@ -1,0 +1,72 @@
+<%- include('partials/header') %>
+
+<section class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card shadow-sm border-0 p-4 mb-4">
+            <h1 class="h3 fw-bold text-center mb-3"><i class="fa-solid fa-route text-primary"></i> Lập lịch trình du lịch</h1>
+            <form action="/itinerary" method="POST" class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold" for="city">Thành phố</label>
+                    <select id="city" name="city" class="form-select" required>
+                        <option value="Ho Chi Minh" <%= selectedCity === 'Ho Chi Minh' ? 'selected' : '' %>>TP. Hồ Chí Minh</option>
+                        <option value="Da Nang" <%= selectedCity === 'Da Nang' ? 'selected' : '' %>>Đà Nẵng – Hội An</option>
+                        <option value="Ha Noi" <%= selectedCity === 'Ha Noi' ? 'selected' : '' %>>Hà Nội</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold" for="num_days">Số ngày</label>
+                    <select id="num_days" name="num_days" class="form-select" required>
+                        <% [1, 2, 3].forEach(dayCount => { %>
+                            <option value="<%= dayCount %>" <%= Number(selectedDays) === dayCount ? 'selected' : '' %>><%= dayCount %> ngày</option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="col-md-3 d-grid">
+                    <button class="btn btn-primary fw-bold" type="submit"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo lịch trình</button>
+                </div>
+            </form>
+        </div>
+
+        <% if (schedule) { %>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h4 fw-bold mb-0">Lịch trình tại <%= schedule.cityName %></h2>
+                <span class="badge rounded-pill bg-primary"><%= schedule.days.length %> ngày</span>
+            </div>
+            <% schedule.days.forEach(day => { %>
+                <section class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h3 class="h5 fw-bold mb-0">Ngày <%= day.day %></h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="itinerary-timeline">
+                            <% day.activities.forEach(activity => { %>
+                                <article class="itinerary-stop d-flex gap-3 pb-4">
+                                    <div class="text-center flex-shrink-0">
+                                        <span class="badge rounded-pill bg-primary px-3 py-2"><%= activity.time %></span>
+                                        <div class="itinerary-line"></div>
+                                    </div>
+                                    <div class="flex-grow-1 border rounded-3 p-3 bg-light">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <i class="fa-solid <%= activity.icon %> text-primary"></i>
+                                            <h4 class="h6 fw-bold mb-0"><%= activity.label %>: <%= activity.name %></h4>
+                                        </div>
+                                        <p class="small text-muted mb-1"><i class="fa-solid fa-location-dot"></i> <%= activity.address %></p>
+                                        <% if (activity.description) { %><p class="small mb-0"><%= activity.description %></p><% } %>
+                                    </div>
+                                </article>
+                            <% }) %>
+                        </div>
+                    </div>
+                </section>
+            <% }) %>
+        <% } %>
+    </div>
+</section>
+
+<style>
+    .itinerary-stop:last-child { padding-bottom: 0 !important; }
+    .itinerary-line { width: 2px; height: 100%; min-height: 28px; margin: 6px auto 0; background: #cfe2ff; }
+    .itinerary-stop:last-child .itinerary-line { display: none; }
+</style>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+
+<h3 class="fw-bold mb-4"><i class="fa-solid fa-clock-rotate-left text-primary"></i> Đơn Đặt Tour Của Tôi</h3>
+
+<% if (bookings.length === 0) { %>
+    <div class="alert alert-info text-center py-4">
+        <h5>Bạn chưa đặt tour nào!</h5>
+        <a href="/" class="btn btn-primary mt-2">Khám phá các tour ngay</a>
+    </div>
+<% } else { %>
+    <div class="row">
+        <% bookings.forEach(b => { %>
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark"><%= b.tour_title %></h5>
+                    <p class="mb-1 text-muted"><strong>Ngày khởi hành:</strong> <%= new Date(b.booking_date).toLocaleDateString('vi-VN') %></p>
+                    <p class="mb-1 text-muted"><strong>Số khách:</strong> <%= b.number_of_guests %> người</p>
+                    <p class="mb-2 text-danger fw-bold">Tổng tiền: <%= Number(b.total_price).toLocaleString('vi-VN') %> VNĐ</p>
+                    <span class="badge <%= b.status === 'Đã duyệt' ? 'bg-success' : (b.status === 'Đã hủy' ? 'bg-danger' : 'bg-warning text-dark') %>">
+                        <%= b.status %>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+<% } %>
+
+<%- include('partials/footer') %>

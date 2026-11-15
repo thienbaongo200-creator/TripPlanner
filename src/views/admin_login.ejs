@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+
+<div class="row justify-content-center my-5">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white text-center py-3">
+                <h4 class="mb-0 fw-bold"><i class="fa-solid fa-user-shield text-warning"></i> Đăng Nhập Quản Trị</h4>
+            </div>
+            <div class="card-body p-4">
+                <% if (error) { %>
+                    <div class="alert alert-danger" role="alert"><%= error %></div>
+                <% } %>
+                <form action="/admin/login" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tên đăng nhập</label>
+                        <input type="text" class="form-control" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Mật khẩu</label>
+                        <input type="password" class="form-control" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100 fw-bold py-2"><i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

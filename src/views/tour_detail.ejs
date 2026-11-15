@@ -1,0 +1,263 @@
+<%- include('partials/header') %>
+
+<% const suppliedGallery = Array.isArray(tour.gallery_images) ? tour.gallery_images.filter(Boolean) : []; %>
+<% const shownGallery = suppliedGallery.slice(0, 4); %>
+<% const galleryOverflow = Math.max(0, suppliedGallery.length - 4); %>
+<% const parsedDays = Number.parseInt(String(tour.duration || '1'), 10); %>
+<% const dayCount = Math.max(1, Math.min(Number.isNaN(parsedDays) ? 1 : parsedDays, 7)); %>
+<% const itineraryDays = Array.isArray(tour.itinerary) && tour.itinerary.length ? tour.itinerary : Array.from({ length: dayCount }, (_, index) => ({ title: `Ngày ${index + 1}`, activities: tour.description || 'Lịch trình chi tiết sẽ được tư vấn khi xác nhận tour.' })); %>
+<% const highlights = Array.isArray(tour.highlights) && tour.highlights.length ? tour.highlights : [tour.destination ? `Khám phá điểm đến ${tour.destination}` : 'Khám phá điểm đến đặc sắc', 'Lịch trình được sắp xếp thuận tiện, phù hợp cho chuyến đi', 'Hỗ trợ tư vấn trước và trong quá trình đặt tour']; %>
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small mb-0">
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= tour.title %></li>
+    </ol>
+</nav>
+
+<section class="mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+        <div>
+            <span class="section-kicker"><%= tour.destination || 'Tour du lịch' %></span>
+            <h1 class="h2 fw-bold mb-0 mt-1"><%= tour.title %></h1>
+        </div>
+        <span class="small text-muted"><i class="fa-regular fa-bookmark me-1"></i>Mã tour TS-<%= tour.id %></span>
+    </div>
+
+    <div class="tour-gallery">
+        <div class="tour-gallery-main">
+            <img src="<%= tour.image_url || '/images/tours/default-tour.svg' %>" alt="<%= tour.title %> – ảnh chính">
+        </div>
+        <div class="tour-gallery-thumbs">
+            <% for (let i = 0; i < 4; i++) { const image = shownGallery[i] || tour.image_url || '/images/tours/default-tour.svg'; %>
+                <div class="tour-gallery-thumb">
+                    <img src="<%= image %>" alt="<%= tour.title %> – ảnh <%= i + 1 %>">
+                    <% if (i === 3 && galleryOverflow > 0) { %>
+                        <div class="tour-gallery-overlay">+<%= galleryOverflow %></div>
+                    <% } %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<div class="row g-4 align-items-start">
+    <div class="col-lg-8">
+        <section class="card p-4 mb-4">
+            <p class="section-kicker mb-1">Điểm nhấn hành trình</p>
+            <h2 class="h4 fw-bold mb-3">Trải nghiệm đáng nhớ trong chuyến đi</h2>
+            <ul class="tour-highlight-list mb-0">
+                <% highlights.forEach(item => { %>
+                    <li><i class="fa-solid fa-circle-check"></i><span><%= typeof item === 'string' ? item : item.title %></span></li>
+                <% }) %>
+            </ul>
+            <% if (tour.description) { %>
+                <hr>
+                <p class="mb-0"><%= tour.description %></p>
+            <% } %>
+        </section>
+
+        <section class="card p-4 mb-4">
+            <p class="section-kicker mb-1">Chương trình</p>
+            <h2 class="h4 fw-bold mb-3">Lịch trình tour</h2>
+            <div class="accordion" id="tourItinerary">
+                <% itineraryDays.forEach((day, index) => { const dayTitle = typeof day === 'string' ? `Ngày ${index + 1}` : (day.title || `Ngày ${day.day || index + 1}`); const activities = typeof day === 'string' ? day : (day.activities || day.description || 'Lịch trình chi tiết sẽ được tư vấn khi xác nhận tour.'); %>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header" id="itinerary-heading-<%= index %>">
+                            <button class="accordion-button <%= index === 0 ? '' : 'collapsed' %> fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#itinerary-day-<%= index %>" aria-expanded="<%= index === 0 ? 'true' : 'false' %>" aria-controls="itinerary-day-<%= index %>">
+                                <i class="fa-regular fa-calendar me-2 text-primary"></i><%= dayTitle %>
+                            </button>
+                        </h3>
+                        <div id="itinerary-day-<%= index %>" class="accordion-collapse collapse <%= index === 0 ? 'show' : '' %>" aria-labelledby="itinerary-heading-<%= index %>" data-bs-parent="#tourItinerary">
+                            <div class="accordion-body">
+                                <p><%= activities %></p>
+                                <% if (typeof day === 'object' && day.meals) { %>
+                                    <p class="small text-muted mb-0"><i class="fa-solid fa-utensils me-1"></i>Bữa ăn: <%= Array.isArray(day.meals) ? day.meals.join(', ') : day.meals %></p>
+                                <% } else { %>
+                                    <p class="small text-muted mb-0"><i class="fa-solid fa-utensils me-1"></i>Bữa ăn dự kiến: Sáng, Trưa, Tối (tùy chương trình cụ thể).</p>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </section>
+
+        <section class="card p-4 mb-4">
+            <p class="section-kicker mb-1">Lịch khởi hành</p>
+            <h2 class="h4 fw-bold mb-3">Lịch khởi hành &amp; giá tour</h2>
+            <div class="table-responsive">
+                <table class="table departure-table align-middle mb-2">
+                    <thead><tr><th>Tháng</th><th>Ngày khởi hành</th><th class="text-end">Giá tham khảo</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td id="departure-month">Chưa chọn</td>
+                            <td id="departure-date">Chọn ngày ở form đặt tour</td>
+                            <td class="text-end fw-semibold text-danger"><%= Number(tour.price).toLocaleString('vi-VN') %> VNĐ/khách</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="small text-muted mb-0">Ngày khởi hành được xác nhận sau khi tiếp nhận yêu cầu đặt tour.</p>
+        </section>
+
+        <section class="card p-4 mb-4">
+            <p class="section-kicker mb-1">Trước khi đặt</p>
+            <h2 class="h4 fw-bold mb-3">Chính sách giá &amp; thông tin lưu ý</h2>
+            <div class="accordion" id="tourPolicies">
+                <div class="accordion-item">
+                    <h3 class="accordion-header" id="policy-price-heading">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#policy-price" aria-expanded="true" aria-controls="policy-price">Giá tour bao gồm và chưa bao gồm</button>
+                    </h3>
+                    <div id="policy-price" class="accordion-collapse collapse show" aria-labelledby="policy-price-heading" data-bs-parent="#tourPolicies">
+                        <div class="accordion-body">
+                            <p class="mb-2"><strong>Giá hiển thị:</strong> <%= Number(tour.price).toLocaleString('vi-VN') %> VNĐ/khách.</p>
+                            <p class="small text-muted mb-0">Các dịch vụ bao gồm, phụ thu và điều kiện áp dụng cần được xác nhận theo chương trình cụ thể trước khi thanh toán.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h3 class="accordion-header" id="policy-notes-heading">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#policy-notes" aria-expanded="false" aria-controls="policy-notes">Giấy tờ và lưu ý hành trình</button>
+                    </h3>
+                    <div id="policy-notes" class="accordion-collapse collapse" aria-labelledby="policy-notes-heading" data-bs-parent="#tourPolicies">
+                        <div class="accordion-body small text-muted">
+                            <ul class="mb-0">
+                                <li>Mang theo giấy tờ tùy thân còn hiệu lực; trẻ em cần giấy tờ theo quy định hiện hành.</li>
+                                <li>Kiểm tra thời gian tập trung và hành lý với đơn vị tổ chức trước ngày khởi hành.</li>
+                                <li>Thông tin về khách sạn, điểm khởi hành và phương tiện sẽ được xác nhận theo lịch tour.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card p-4 mb-4" id="reviews">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                <div>
+                    <p class="section-kicker mb-1">Chia sẻ trải nghiệm</p>
+                    <h2 class="h4 fw-bold mb-0">Đánh giá từ khách hàng</h2>
+                </div>
+                <div class="text-warning fw-semibold" aria-label="Điểm trung bình <%= Number(reviewSummary.average_rating).toFixed(1) %> trên 5">
+                    ★ <%= Number(reviewSummary.average_rating).toFixed(1) %><span class="text-muted small fw-normal"> / 5 · <%= reviewSummary.review_count %> đánh giá</span>
+                </div>
+            </div>
+
+            <% if (reviewSubmitted) { %>
+                <div class="alert alert-success py-2" role="status">Đánh giá của bạn đã được lưu.</div>
+            <% } %>
+
+            <% if (canReview) { %>
+                <form action="/tour/<%= tour.id %>/reviews" method="POST" class="border rounded-3 p-3 mb-4">
+                    <label for="review-rating" class="form-label fw-semibold"><%= userReview ? 'Cập nhật đánh giá' : 'Bạn chấm tour này mấy sao?' %></label>
+                    <select id="review-rating" name="rating" class="form-select mb-3" required>
+                        <% [5, 4, 3, 2, 1].forEach(star => { %>
+                            <option value="<%= star %>" <%= Number(userReview?.rating || 5) === star ? 'selected' : '' %>><%= star %> sao</option>
+                        <% }) %>
+                    </select>
+                    <label for="review-comment" class="form-label fw-semibold">Nhận xét</label>
+                    <textarea id="review-comment" name="comment" class="form-control mb-3" rows="3" maxlength="1000" placeholder="Chia sẻ điều bạn thích về chuyến đi"><%= userReview?.comment || '' %></textarea>
+                    <button class="btn btn-primary" type="submit"><%= userReview ? 'Cập nhật đánh giá' : 'Gửi đánh giá' %></button>
+                </form>
+            <% } else if (!isLoggedIn) { %>
+                <p class="small text-muted"><a href="/login">Đăng nhập</a> để đánh giá sau khi hoàn thành tour.</p>
+            <% } else { %>
+                <p class="small text-muted">Đánh giá được mở cho khách có đơn đã duyệt sau ngày khởi hành.</p>
+            <% } %>
+
+            <% if (reviews.length) { %>
+                <div class="d-grid gap-3">
+                    <% reviews.forEach(review => { %>
+                        <article class="border-bottom pb-3">
+                            <div class="d-flex justify-content-between gap-3">
+                                <strong><%= review.reviewer_name %></strong>
+                                <time class="small text-muted" datetime="<%= new Date(review.created_at).toISOString() %>"><%= new Date(review.created_at).toLocaleDateString('vi-VN') %></time>
+                            </div>
+                            <div class="text-warning" aria-label="<%= review.rating %> trên 5 sao"><%= '★'.repeat(review.rating) %><%= '☆'.repeat(5 - review.rating) %></div>
+                            <% if (review.comment) { %><p class="mb-0 mt-1" style="white-space: pre-line"><%= review.comment %></p><% } %>
+                        </article>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <p class="text-muted mb-0">Chưa có đánh giá. Hãy là người đầu tiên chia sẻ trải nghiệm.</p>
+            <% } %>
+        </section>
+    </div>
+
+    <aside class="col-lg-4">
+        <div class="card tour-sidebar p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div><span class="small text-muted">Giá từ</span><div class="tour-price"><%= Number(tour.price).toLocaleString('vi-VN') %> <small class="fs-6">VNĐ</small></div></div>
+                <span class="badge text-bg-light border"><i class="fa-regular fa-clock me-1 text-primary"></i><%= tour.duration || 'Theo chương trình' %></span>
+            </div>
+            <p class="tour-price-note">Giá tham khảo mỗi khách · xác nhận theo ngày khởi hành</p>
+            <hr>
+            <div class="d-grid gap-3 mb-4">
+                <div class="tour-fact"><i class="fa-solid fa-hotel"></i><span><strong class="text-dark">Khách sạn</strong><br><%= tour.hotel_name || tour.hotel || 'Theo tiêu chuẩn chương trình' %></span></div>
+                <div class="tour-fact"><i class="fa-solid fa-location-dot"></i><span><strong class="text-dark">Nơi khởi hành</strong><br><%= tour.departure_location || tour.start_location || 'Xác nhận khi đặt tour' %></span></div>
+                <div class="tour-fact"><i class="fa-solid fa-plane"></i><span><strong class="text-dark">Phương tiện</strong><br><%= tour.transport || tour.airline || 'Theo chương trình tour' %></span></div>
+            </div>
+            <form action="/tour/<%= tour.id %>/book" method="POST" id="booking-form">
+                <h2 class="h5 fw-bold mb-3">Đăng ký tour</h2>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="customer-name">Họ và tên</label>
+                    <input id="customer-name" type="text" class="form-control" name="customer_name" autocomplete="name" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="customer-phone">Số điện thoại</label>
+                    <input id="customer-phone" type="tel" class="form-control" name="phone" autocomplete="tel" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="customer-email">Email</label>
+                    <input id="customer-email" type="email" class="form-control" name="email" autocomplete="email">
+                </div>
+                <div class="row g-2">
+                    <div class="col-5 mb-3">
+                        <label class="form-label small fw-semibold" for="guest-count">Số khách</label>
+                        <input id="guest-count" type="number" class="form-control" name="number_of_guests" value="1" min="1" required>
+                    </div>
+                    <div class="col-7 mb-3">
+                        <label class="form-label small fw-semibold" for="booking-date">Ngày khởi hành</label>
+                        <input id="booking-date" type="date" class="form-control" name="booking_date" required aria-describedby="booking-date-display">
+                    </div>
+                </div>
+                <p class="small text-muted" id="booking-date-display">Chọn ngày để xem ngày khởi hành theo định dạng Việt Nam.</p>
+                <button type="submit" class="btn btn-accent btn-lg w-100 fw-bold">ĐẶT NGAY <i class="fa-solid fa-arrow-right ms-1"></i></button>
+                <p class="small text-center text-muted mt-3 mb-0"><i class="fa-solid fa-headset me-1"></i>Gửi yêu cầu, chúng tôi sẽ xác nhận lịch và chi tiết tour.</p>
+            </form>
+        </div>
+    </aside>
+</div>
+
+<script>
+    window.addEventListener('load', () => {
+        const dateInput = document.getElementById('booking-date');
+        const dateDisplay = document.getElementById('booking-date-display');
+        const monthCell = document.getElementById('departure-month');
+        const departureCell = document.getElementById('departure-date');
+        if (!dateInput || typeof window.flatpickr !== 'function') return;
+
+        window.flatpickr(dateInput, {
+            locale: window.flatpickr.l10ns.vn,
+            altInput: true,
+            altFormat: 'd/m/Y',
+            dateFormat: 'Y-m-d',
+            minDate: 'today',
+            disableMobile: true,
+            onReady: (_selectedDates, _dateString, instance) => {
+                instance.altInput.id = 'booking-date-localized';
+                document.querySelector('label[for="booking-date"]')?.setAttribute('for', instance.altInput.id);
+            },
+            onChange: (selectedDates, isoDate) => {
+                if (!isoDate || !selectedDates.length) return;
+                const date = selectedDates[0];
+                dateDisplay.textContent = `Ngày khởi hành: ${date.toLocaleDateString('vi-VN')}`;
+                monthCell.textContent = date.toLocaleDateString('vi-VN', { month: 'long', year: 'numeric' });
+                departureCell.textContent = date.toLocaleDateString('vi-VN');
+            }
+        });
+    });
+</script>
+
+<%- include('partials/footer') %>
